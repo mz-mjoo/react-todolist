@@ -34,23 +34,23 @@ const TodoWrapper = styled.ul`
 `;
 
 function App() {
-  // const todos = useMemo<Props[]>(() => {
-  //   return [
-  //     {id: '1', title: '공부'},
-  //     {id: '2', title: '헬스'},
-  //     {id: '3', title: '독서'},
-  //     {id: '4', title: '산책'},
-  //     {id: '5', title: '요리'},
-  //   ];
-  // }, []);
+  const todos = useMemo<Props[]>(() => {
+    return [
+      {id: '1', title: '공부'},
+      {id: '2', title: '헬스'},
+      {id: '3', title: '독서'},
+      {id: '4', title: '산책'},
+      {id: '5', title: '요리'},
+    ];
+  }, []);
 
-  const getItems = (count: number) =>
-    Array.from({length: count}, (v, k) => k).map((k) => ({
-      id: `item-${k}`,
-      title: `item ${k}`,
-    }));
+  // const getItems = (count: number) =>
+  //   Array.from({length: count}, (v, k) => k).map((k) => ({
+  //     id: `item-${k}`,
+  //     title: `item ${k}`,
+  //   }));
 
-  const [todoList, setTodoList] = useState<Props[]>(getItems(10));
+  const [todoList, setTodoList] = useState<Props[]>(todos);
 
   const reorder = (list: Props[], startIndex: number, endIndex: number) => {
     const result = Array.from(list);
@@ -63,7 +63,7 @@ function App() {
   };
 
   const handleChange = ({destination, source}: DropResult) => {
-    console.log('dest:', destination, 'src:', source, 'ㅇㅅㅇ..;명주짱');
+    // console.log('dest:', destination, 'src:', source, 'ㅇㅅㅇ..;명주짱');
 
     if (!destination) {
       return;
@@ -71,21 +71,7 @@ function App() {
 
     const items = reorder(todoList, source.index, destination.index);
 
-    setTodoList(
-      produce(todoList, (draft) => {
-        draft.push({id: String(source.index), title: ''});
-      }),
-    );
-    // setTodoList(items);
-    // setTodoList(produce((draft) => draft.push(items)));
-
-    // setTodoList(
-    //   produce(todoList, (draft) => {
-    //     draft.push();
-    //   }),
-    // );
-    console.log('todolist', items);
-    console.log(todoList);
+    setTodoList(items);
   };
   return (
     <RecoilRoot>
@@ -96,15 +82,15 @@ function App() {
           <Droppable droppableId="todos">
             {(provided) => (
               <TodoWrapper {...provided.droppableProps} ref={provided.innerRef}>
-                {todoList.map(({id, title}, index) => (
-                  <Draggable key={index} draggableId={id} index={index}>
+                {todoList.map((todo, index) => (
+                  <Draggable key={todo.id} draggableId={todo.id} index={index}>
                     {(provided) => (
                       <li
                         ref={provided.innerRef}
                         {...provided.dragHandleProps}
                         {...provided.draggableProps}
                       >
-                        {title}
+                        {todo.title}
                       </li>
                     )}
                   </Draggable>
